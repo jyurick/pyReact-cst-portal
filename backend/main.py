@@ -12,7 +12,7 @@ class Person(BaseModel):
 
 DB: List[Person] = [
     Person(name="Alice", age=25, address="Los Angeles"),
-    Person(name="Bob", age=27, address="San Francisco"),
+    Person(name="Patricia", age=27, address="San Francisco"),
 ]
 
 @app.get("/api")
