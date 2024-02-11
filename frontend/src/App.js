@@ -8,7 +8,7 @@ function App() {
   const [people, setPeople] = useState([]);
 
   const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: 'https://cst-portal-ca281c870ff7.herokuapp.com/',
   });
   
   api.get('/client_data/')
