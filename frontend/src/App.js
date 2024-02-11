@@ -7,12 +7,20 @@ import { useEffect, useState } from 'react';
 function App() {
   const [people, setPeople] = useState([]);
 
+  const api = axios.create({
+    baseURL: 'http://127.0.0.1:8000',
+  });
+  
+  api.get('/client_data/')
+    .then(response => console.log(response.data))
+    .catch(error => console.error('Error:', error));
+
   useEffect(() => {
-    axios.get('/api').then(res => setPeople(res.data));
+    api.get('/client_data/').then(res => setPeople(res.data));
   }, []);
 
   return people.map((p, index) => {
-    return <p key={index}>{p.name} {p.age} {p.address}</p>
+    return <p key={index}>{p.first_name} {p.last_name}</p>
   })
 }
 
