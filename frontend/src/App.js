@@ -1,4 +1,4 @@
-import './App.css';
+/*import './App.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -8,7 +8,7 @@ function App() {
   const [people, setPeople] = useState([]);
 
   const api = axios.create({
-    baseURL: 'https://cst-portal-ca281c870ff7.herokuapp.com/',
+    baseURL: 'http://127.0.0.1:8000/',
   });
   
   api.get('/client_data/')
@@ -25,3 +25,20 @@ function App() {
 }
 
 export default App;
+*/
+
+import './App.css';
+import Header from './components/Header';
+
+function App() {
+  return (
+    <div className="App">
+      <Header />
+    </div>
+
+  );
+}
+
+export default App;
+
+
