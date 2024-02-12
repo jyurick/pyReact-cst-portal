@@ -24,7 +24,7 @@ const AddNewClient = () => {
         }
 
         try {
-            await axios.post('https://cst-portal-ca281c870ff7.herokuapp.com/client_data', newClient);
+            await axios.post('http://127.0.0.1:8000/client_data', newClient);
             console.log('Client data added successfully');
             // Clear form fields after successful submission
             setNewClient({

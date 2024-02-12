@@ -5,7 +5,6 @@ import { Person, Accessibility, AirplanemodeActive, Home, DirectionsBus, AttachM
 const Client = ({ client }) => {
     const name = client.first_name + ' ' + client.last_name;
 
-    // Function to generate Chip component
     const renderChip = (label, icon) => {
         return (
             <Chip
@@ -19,14 +18,25 @@ const Client = ({ client }) => {
         );
     };
 
+    const calculateAge = (dob) => {
+        const dobDate = new Date(dob);
+        const diffMs = Date.now() - dobDate.getTime();
+        const ageDate = new Date(diffMs);
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    };
+
     return (
         <Card key={client.client_id} style={{ margin: '10px', width: '300px' }}>
             <CardContent>
-                <Typography variant="h5" component="div">
-                    {name} 
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                {client.active == "Y" ? "Active" : "Inactive"} | {client.client_id}
                 </Typography>
+                <Typography variant="h5" component="div">
+                    {name}
+                </Typography>
+
                 <Typography color="text.secondary" gutterBottom>
-                    {client.gender} | {client.date_of_birth}
+                    Age: {calculateAge(client.date_of_birth)} | {client.gender}
                 </Typography>
                 <Typography variant="body2" component="p">
                     City: {client.city}

@@ -1,5 +1,5 @@
 import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import databases
 import sqlalchemy
@@ -35,29 +35,32 @@ client_data = sqlalchemy.Table(
     "client_data",
     metadata,
     sqlalchemy.Column("year", sqlalchemy.Integer),
-    sqlalchemy.Column("active", sqlalchemy.String),
+    sqlalchemy.Column("active", sqlalchemy.Boolean),
     sqlalchemy.Column("client_id", sqlalchemy.Integer),
     sqlalchemy.Column("first_name", sqlalchemy.String),
     sqlalchemy.Column("last_name", sqlalchemy.String),
     sqlalchemy.Column("gender", sqlalchemy.String),
     sqlalchemy.Column("date_of_birth", sqlalchemy.Date),
     sqlalchemy.Column("city", sqlalchemy.String),
-    sqlalchemy.Column("indigenous", sqlalchemy.String),
-    sqlalchemy.Column("pwd", sqlalchemy.String),
-    sqlalchemy.Column("vet", sqlalchemy.String),
-    sqlalchemy.Column("emergency_sheltered", sqlalchemy.String),
-    sqlalchemy.Column("bus_pass", sqlalchemy.String),
-    sqlalchemy.Column("clothing_supplement", sqlalchemy.String),
-    sqlalchemy.Column("pet_deposit", sqlalchemy.String),
-    sqlalchemy.Column("pssg", sqlalchemy.String),
+    sqlalchemy.Column("indigenous", sqlalchemy.Boolean),
+    sqlalchemy.Column("pwd", sqlalchemy.Boolean),
+    sqlalchemy.Column("vet", sqlalchemy.Boolean),
+    sqlalchemy.Column("emergency_sheltered", sqlalchemy.Boolean),
+    sqlalchemy.Column("bus_pass", sqlalchemy.Boolean),
+    sqlalchemy.Column("clothing_supplement", sqlalchemy.Boolean),
+    sqlalchemy.Column("pet_deposit", sqlalchemy.Boolean),
+    sqlalchemy.Column("pssg", sqlalchemy.Boolean),
     sqlalchemy.Column("status", sqlalchemy.String),
     sqlalchemy.Column("deceased", sqlalchemy.Date),
 )
 
 # Endpoint to fetch client data
 @app.get("/client_data/")
-async def read_client_data():
-    query = client_data.select()
+async def read_client_data(search_query: str = Query(None)):
+    query = client_data.select().limit(50)
+    if search_query:
+        query = query.where(client_data.c.first_name.ilike(f"%{search_query}%"))
+    
     return await database.fetch_all(query)
 
 
