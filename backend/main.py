@@ -1,11 +1,17 @@
+import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import databases
 import sqlalchemy
 from sqlalchemy import select
+from sqlalchemy.sql import func
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Database URL from Heroku credentials
-DATABASE_URL = "postgresql://mxagqtjxpqrsty:d7dfdf2eb8813d5916b095d4ceca89c2f214c1076fd5b586d62bd90e5dae64ac@ec2-44-213-151-75.compute-1.amazonaws.com:5432/dce1uoa4ga8f5o"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Create FastAPI app
 app = FastAPI()
@@ -54,6 +60,8 @@ async def read_client_data():
     query = client_data.select()
     return await database.fetch_all(query)
 
+
+
 # Startup event to connect to the database
 @app.on_event("startup")
 async def startup():
@@ -63,6 +71,22 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await database.disconnect()
+
+# Endpoint to insert client data
+@app.post("/client_data/")
+async def insert_client_data(new_client: dict):
+    # Convert date string to datetime object
+    if new_client.get("date_of_birth"):
+        new_client["date_of_birth"] = datetime.datetime.fromisoformat(new_client["date_of_birth"])
+    
+    # Insert data into database
+    query = client_data.insert().values(**new_client)
+    try:
+        await database.execute(query)
+        return {"message": "Client data inserted successfully"}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # Run the FastAPI app with Uvicorn server
 if __name__ == "__main__":
