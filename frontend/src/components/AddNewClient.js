@@ -5,9 +5,7 @@ import { Card, CardContent, Typography, Button, TextField } from '@mui/material'
 const AddNewClient = () => {
     const [newClient, setNewClient] = useState({
         first_name: '',
-        last_name: '',
-        gender: '',
-        date_of_birth: '', // Use an empty string initially
+        last_name: '', 
     });
 
     const handleInputChange = (e) => {
@@ -30,8 +28,6 @@ const AddNewClient = () => {
             setNewClient({
                 first_name: '',
                 last_name: '',
-                gender: '',
-                date_of_birth: '',
             });
         } catch (error) {
             console.error('Error:', error.response.data);
@@ -62,26 +58,7 @@ const AddNewClient = () => {
                         onChange={handleInputChange}
                         style={{ marginBottom: '10px' }}
                     />
-                    <TextField
-                        name="gender"
-                        label="Gender"
-                        variant="outlined"
-                        value={newClient.gender}
-                        onChange={handleInputChange}
-                        style={{ marginBottom: '10px' }}
-                    />
-                    <TextField
-                        name="date_of_birth"
-                        label="Date of Birth"
-                        variant="outlined"
-                        type="date" // Use input type date for date selection
-                        value={newClient.date_of_birth}
-                        onChange={handleInputChange}
-                        style={{ marginBottom: '10px' }}
-                        InputLabelProps={{
-                            shrink: true, // Ensure label shrinks when value is present
-                        }}
-                    />
+                    
                     <Button type="submit" variant="contained" color="primary">
                         Add Client
                     </Button>

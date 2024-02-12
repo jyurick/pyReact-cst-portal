@@ -27,11 +27,11 @@ database = databases.Database(DATABASE_URL)
 # Endpoint to fetch client data
 @app.get("/client_data/")
 async def read_client_data(search_query: str = Query(None)):
-    query = f"SELECT c.*, ci.city_name, ha.health_authority_name FROM client c join city ci on c.city_id = ci.city_id"
-    query += " join health_authority_city hac on ci.city_id = hac.city_id"
-    query += " join health_authority ha on hac.health_authority_id = ha.health_authority_id"
+    query = f"SELECT c.*, ci.city_name, ha.health_authority_name FROM client c left outer join city ci on c.city_id = ci.city_id"
+    query += " left outer join health_authority_city hac on ci.city_id = hac.city_id"
+    query += " left outer join health_authority ha on hac.health_authority_id = ha.health_authority_id"
     if search_query:
-        query += f" WHERE first_name LIKE '%{search_query}%' OR last_name LIKE '%{search_query}%'"
+        query += f" WHERE CONCAT(first_name, ' ', last_name) LIKE '%{search_query}%'"
     
     query += " LIMIT 50"
     return await database.fetch_all(query)
@@ -50,17 +50,20 @@ async def shutdown():
 @app.post("/client_data/")
 async def insert_client_data(new_client: dict):
     # Convert date string to datetime object
+    print(new_client)
     if new_client.get("date_of_birth"):
         new_client["date_of_birth"] = datetime.datetime.fromisoformat(new_client["date_of_birth"])
     
     # Insert data into database
     columns = ', '.join(new_client.keys())
     values = ', '.join([f"'{value}'" if isinstance(value, str) else str(value) for value in new_client.values()])
-    query = f"INSERT INTO client ({columns}) VALUES ({values})"
+    query = f"INSERT INTO client (client_id, {columns}) VALUES (generateClientID(), {values})"
     try:
         await database.execute(query)
+        print("Client data inserted successfully")
         return {"message": "Client data inserted successfully"}
     except Exception as e:
+        print(e)
         return {"error": str(e)}
 
 # Run the FastAPI app with Uvicorn server
