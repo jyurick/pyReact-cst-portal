@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pyReact-cst-portal/static/css/main.755a117c.css",
+    "main.js": "/pyReact-cst-portal/static/js/main.761ad6c3.js",
+    "index.html": "/pyReact-cst-portal/index.html",
+    "main.755a117c.css.map": "/pyReact-cst-portal/static/css/main.755a117c.css.map",
+    "main.761ad6c3.js.map": "/pyReact-cst-portal/static/js/main.761ad6c3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.755a117c.css",
+    "static/js/main.761ad6c3.js"
+  ]
+}
