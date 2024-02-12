@@ -29,27 +29,27 @@ const Client = ({ client }) => {
         <Card key={client.client_id} style={{ margin: '10px', width: '300px' }}>
             <CardContent>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                {client.active == "Y" ? "Active" : "Inactive"} | {client.client_id}
+                {client.active ? "Active" : "Inactive"} | {client.client_id}
                 </Typography>
                 <Typography variant="h5" component="div">
                     {name}
                 </Typography>
 
                 <Typography color="text.secondary" gutterBottom>
-                    Age: {calculateAge(client.date_of_birth)} | {client.gender}
+                    {calculateAge(client.date_of_birth)} years | {client.gender}
                 </Typography>
                 <Typography variant="body2" component="p">
-                    City: {client.city}
+                    {client.city_name} | {client.health_authority_name}
                 </Typography>
-                {client.indigenous === "Y" && renderChip("Indigenous", <Person />)}
-                {client.pwd === "Y" && renderChip("Persons with Disabilities", <Accessibility />)}
-                {client.vet === "Y" && renderChip("Veteran", <AirplanemodeActive />)}
-                {client.emergency_sheltered === "Y" && renderChip("Emergency Sheltered", <Home />)}
-                {client.bus_pass === "Y" && renderChip("Bus Pass", <DirectionsBus />)}
-                {client.clothing_supplement === "Y" && renderChip("Clothing Supplement", <AttachMoney />)}
-                {client.pet_deposit === "Y" && renderChip("Pet Deposit", <Pets />)}
-                {client.pssg === "Y" && renderChip("PSSG", <LocalHospital />)}
-                {client.status === "Y" && renderChip("Status", <Schedule />)}
+                {client.indigenous && renderChip("Indigenous", <Person />)}
+                {client.pwd && renderChip("Persons with Disabilities", <Accessibility />)}
+                {client.vet  && renderChip("Veteran", <AirplanemodeActive />)}
+                {client.emergency_sheltered  && renderChip("Emergency Sheltered", <Home />)}
+                {client.bus_pass  && renderChip("Bus Pass", <DirectionsBus />)}
+                {client.clothing_supplement  && renderChip("Clothing Supplement", <AttachMoney />)}
+                {client.pet_deposit  && renderChip("Pet Deposit", <Pets />)}
+                {client.pssg  && renderChip("PSSG", <LocalHospital />)}
+                {client.status  && renderChip("Status", <Schedule />)}
                 {client.deceased && renderChip("Deceased", <Typography variant="body2" component="p">{client.deceased}</Typography>)}
             </CardContent>
         </Card>

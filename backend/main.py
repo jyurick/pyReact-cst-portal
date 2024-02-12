@@ -1,12 +1,9 @@
 import datetime
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-import databases
-import sqlalchemy
-from sqlalchemy import select
-from sqlalchemy.sql import func
 import os
 from dotenv import load_dotenv
+import databases
 
 load_dotenv()
 
@@ -27,43 +24,17 @@ app.add_middleware(
 # Create a database connection pool
 database = databases.Database(DATABASE_URL)
 
-# SQLAlchemy metadata for creating table objects
-metadata = sqlalchemy.MetaData()
-
-# Define client_data table object
-client_data = sqlalchemy.Table(
-    "client_data",
-    metadata,
-    sqlalchemy.Column("year", sqlalchemy.Integer),
-    sqlalchemy.Column("active", sqlalchemy.Boolean),
-    sqlalchemy.Column("client_id", sqlalchemy.Integer),
-    sqlalchemy.Column("first_name", sqlalchemy.String),
-    sqlalchemy.Column("last_name", sqlalchemy.String),
-    sqlalchemy.Column("gender", sqlalchemy.String),
-    sqlalchemy.Column("date_of_birth", sqlalchemy.Date),
-    sqlalchemy.Column("city", sqlalchemy.String),
-    sqlalchemy.Column("indigenous", sqlalchemy.Boolean),
-    sqlalchemy.Column("pwd", sqlalchemy.Boolean),
-    sqlalchemy.Column("vet", sqlalchemy.Boolean),
-    sqlalchemy.Column("emergency_sheltered", sqlalchemy.Boolean),
-    sqlalchemy.Column("bus_pass", sqlalchemy.Boolean),
-    sqlalchemy.Column("clothing_supplement", sqlalchemy.Boolean),
-    sqlalchemy.Column("pet_deposit", sqlalchemy.Boolean),
-    sqlalchemy.Column("pssg", sqlalchemy.Boolean),
-    sqlalchemy.Column("status", sqlalchemy.String),
-    sqlalchemy.Column("deceased", sqlalchemy.Date),
-)
-
 # Endpoint to fetch client data
 @app.get("/client_data/")
 async def read_client_data(search_query: str = Query(None)):
-    query = client_data.select().limit(50)
+    query = f"SELECT c.*, ci.city_name, ha.health_authority_name FROM client c join city ci on c.city_id = ci.city_id"
+    query += " join health_authority_city hac on ci.city_id = hac.city_id"
+    query += " join health_authority ha on hac.health_authority_id = ha.health_authority_id"
     if search_query:
-        query = query.where(client_data.c.first_name.ilike(f"%{search_query}%"))
+        query += f" WHERE first_name LIKE '%{search_query}%' OR last_name LIKE '%{search_query}%'"
     
+    query += " LIMIT 50"
     return await database.fetch_all(query)
-
-
 
 # Startup event to connect to the database
 @app.on_event("startup")
@@ -83,16 +54,16 @@ async def insert_client_data(new_client: dict):
         new_client["date_of_birth"] = datetime.datetime.fromisoformat(new_client["date_of_birth"])
     
     # Insert data into database
-    query = client_data.insert().values(**new_client)
+    columns = ', '.join(new_client.keys())
+    values = ', '.join([f"'{value}'" if isinstance(value, str) else str(value) for value in new_client.values()])
+    query = f"INSERT INTO client ({columns}) VALUES ({values})"
     try:
         await database.execute(query)
         return {"message": "Client data inserted successfully"}
     except Exception as e:
         return {"error": str(e)}
 
-
 # Run the FastAPI app with Uvicorn server
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
