@@ -8,9 +8,7 @@ const Header = () => {
         <AppBar position="static">
             <Toolbar>
                 <nav>
-                    <Button color="inherit">Search</Button>
-                    <Button color="inherit">Add Client</Button>
-                    {/* Add more navigation links as needed */}
+                    <Button color="inherit">CST PORTAL</Button>
                 </nav>
             </Toolbar>
         </AppBar>

@@ -17,7 +17,7 @@ const ClientList = ({ selectClient }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/client_data/?search_query=${searchQuery}`);
+      const response = await axios.get(`https://cst-portal-ca281c870ff7.herokuapp.com/client_data/?search_query=${searchQuery}`);
       setClients(response.data);
     } catch (error) {
       console.error('Error:', error);

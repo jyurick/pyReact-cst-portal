@@ -96,9 +96,9 @@ const AddNewClient = ({ client }) => {
         console.log(newClient);
         try {
             if (isEditMode) {
-                await axios.put(`http://127.0.0.1:8000/client_data/${newClient.client_id}`, newClient);
+                await axios.put(`https://cst-portal-ca281c870ff7.herokuapp.com/client_data/${newClient.client_id}`, newClient);
             } else {
-                await axios.post('http://127.0.0.1:8000/client_data', newClient);
+                await axios.post('https://cst-portal-ca281c870ff7.herokuapp.com/client_data', newClient);
             }
             
             console.log('Client data added successfully');
