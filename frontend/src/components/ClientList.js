@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const ClientList = () => {
+const ClientList = ({ selectClient }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ const ClientList = () => {
       ) : (
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', marginTop: '20px'   }}>
           {clients.map(client => (
-            <Client key={client['client_id']} client={client} />
+            <Client key={client['client_id']} client={client} selectClient={selectClient} />
           ))}
         </div>
       )}

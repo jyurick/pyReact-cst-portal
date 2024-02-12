@@ -31,7 +31,7 @@ async def read_client_data(search_query: str = Query(None)):
     query += " left outer join health_authority_city hac on ci.city_id = hac.city_id"
     query += " left outer join health_authority ha on hac.health_authority_id = ha.health_authority_id"
     if search_query:
-        query += f" WHERE CONCAT(first_name, ' ', last_name) LIKE '%{search_query}%'"
+        query += f" WHERE CONCAT(LOWER(first_name), ' ', LOWER(last_name)) LIKE '%{search_query.lower()}%'"
     
     query += " LIMIT 50"
     return await database.fetch_all(query)
@@ -49,11 +49,6 @@ async def shutdown():
 # Endpoint to insert client data
 @app.post("/client_data/")
 async def insert_client_data(new_client: dict):
-    # Convert date string to datetime object
-    print(new_client)
-    if new_client.get("date_of_birth"):
-        new_client["date_of_birth"] = datetime.datetime.fromisoformat(new_client["date_of_birth"])
-    
     # Insert data into database
     columns = ', '.join(new_client.keys())
     values = ', '.join([f"'{value}'" if isinstance(value, str) else str(value) for value in new_client.values()])
@@ -65,6 +60,23 @@ async def insert_client_data(new_client: dict):
     except Exception as e:
         print(e)
         return {"error": str(e)}
+
+# Endpoint to update client data
+@app.put("/client_data/{client_id}")
+async def update_client_data(client_id: str, updated_client: dict):
+    try:
+
+        # Update data in database
+        update_columns = ', '.join([f"{key} = '{value}'" if isinstance(value, str) else f"{key} = {value}" for key, value in updated_client.items()])
+        update_query = f"UPDATE client SET {update_columns} WHERE client_id = '{client_id}'"
+        print(update_query)
+        await database.execute(update_query)
+        print("Client data updated successfully")
+        return {"message": "Client data updated successfully"}
+    except Exception as e:
+        print(e)
+        return {"error": str(e)}
+        
 
 # Run the FastAPI app with Uvicorn server
 if __name__ == "__main__":
