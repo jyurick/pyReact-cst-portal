@@ -54,5 +54,7 @@ CREATE TABLE health_authority_city (
 CREATE TABLE client_note (
 	note_id SERIAL PRIMARY KEY,
 	client_id INT,
+    date DATE,
+	note VARCHAR(400),
 	FOREIGN KEY (client_id) REFERENCES client(client_id)
 );

@@ -9,9 +9,8 @@ function App() {
   const [selectedClient, setSelectedClient] = useState(emptyClient);
 
   const addNewClient = (client) => {
-    console.log(client);
     setSelectedClient(client);
-    console.log(selectedClient);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (

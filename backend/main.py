@@ -67,7 +67,8 @@ async def update_client_data(client_id: str, updated_client: dict):
     try:
 
         # Update data in database
-        update_columns = ', '.join([f"{key} = '{value}'" if isinstance(value, str) else f"{key} = {value}" for key, value in updated_client.items()])
+        update_columns = ', '.join([f"{key} = '{value}'" if isinstance(value, str) else f"{key} = {value}" 
+                            for key, value in updated_client.items() if value is not None])
         update_query = f"UPDATE client SET {update_columns} WHERE client_id = '{client_id}'"
         print(update_query)
         await database.execute(update_query)
@@ -76,7 +77,20 @@ async def update_client_data(client_id: str, updated_client: dict):
     except Exception as e:
         print(e)
         return {"error": str(e)}
-        
+
+# Endpoint to delete client data
+@app.delete("/client_data/{client_id}")
+async def delete_client_data(client_id: str):
+    try:
+        # Delete data from database
+        delete_query = f"DELETE FROM client WHERE client_id = '{client_id}'"
+        await database.execute(delete_query)
+        print("Client data deleted successfully")
+        return {"message": "Client data deleted successfully"}
+    except Exception as e:
+        print(e)
+        return {"error": str(e)}
+
 
 # Run the FastAPI app with Uvicorn server
 if __name__ == "__main__":

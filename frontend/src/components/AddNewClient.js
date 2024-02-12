@@ -5,18 +5,6 @@ import { calculateAge } from '../services/misc';
 import '../styles.css';
 import { emptyClient } from '../services/misc';
 
-function removeEmptyProperties(obj) {
-    for (let key in obj) {
-        if (
-            obj[key] === undefined ||
-            obj[key] === null ||
-            obj[key] === '' 
-        ) {
-            delete obj[key];
-        }
-    }
-    return obj;
-}
 
 const AddNewClient = ({ client }) => {
     const isEditMode = client.client_id;
@@ -84,16 +72,9 @@ const AddNewClient = ({ client }) => {
         newClient.bus_pass = isBusPassEligible() && newClient.bus_pass;
         newClient.active = isActiveEligible() && newClient.active;
 
-        for (let key in newClient) {
-            if (
-                newClient[key] === undefined ||
-                newClient[key] === null ||
-                newClient[key] === '' 
-            ) {
-                delete newClient[key];
-            }
-        }
-        console.log(newClient);
+        delete newClient.city_name;
+        delete newClient.health_authority_name;
+
         try {
             if (isEditMode) {
                 await axios.put(`https://cst-portal-ca281c870ff7.herokuapp.com/client_data/${newClient.client_id}`, newClient);
@@ -132,7 +113,7 @@ const AddNewClient = ({ client }) => {
         <Card style={{ margin: '10px' }}>
             <CardContent>
                 <Typography variant="h5" component="div">
-                    {isEditMode ? 'Edit Client' : 'Add New Client'}
+                    {isEditMode ? 'Edit Existing Client' : 'Add New Client'}
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -299,9 +280,6 @@ const AddNewClient = ({ client }) => {
                             </Typography>
                         )}
                     </div>
-
-
-
 
                     <Button type="submit" variant="contained" color="primary" style={{ margin: '10px' }}>
                         {isEditMode ? 'Update' : 'Add'}
